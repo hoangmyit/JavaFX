@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Lesson8.Fan;
+package Lesson7.Fan;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
