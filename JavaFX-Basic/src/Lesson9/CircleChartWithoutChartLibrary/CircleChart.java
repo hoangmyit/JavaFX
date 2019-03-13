@@ -13,9 +13,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Arc;
+import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import jdk.nashorn.internal.objects.NativeArray;
 
 /**
  *
@@ -27,56 +30,48 @@ public class CircleChart extends Application {
     public void start(Stage primaryStage) {
         Pane pane = new Pane();
         VBox vBox = new VBox();
+        Statistic index = new Statistic();
+        index.addValues(new ChartData("2014", 50, Color.RED));
+        index.addValues(new ChartData("2015", 80, Color.YELLOW));
+        index.addValues(new ChartData("2016", 100, Color.GREEN));
+        index.addValues(new ChartData("2017", 120, Color.BROWN));
         
-        // 2014
-        HBox subBox2014 = new HBox();
-        subBox2014.setAlignment(Pos.CENTER);
-        subBox2014.setSpacing(10);
-        subBox2014.setPadding(new Insets(10));
-        Rectangle rec2014 = new Rectangle();
-        rec2014.widthProperty().bind(pane.widthProperty().divide(10));
-        rec2014.heightProperty().bind(pane.heightProperty().divide(10));
-        rec2014.setFill(Color.RED);
-        Text txt2014 = new Text("2014");
-        subBox2014.getChildren().addAll(rec2014, txt2014);
         
-        // 2015
-        HBox subBox2015 = new HBox();
-        subBox2015.setAlignment(Pos.CENTER);
-        subBox2015.setSpacing(10);
-        subBox2015.setPadding(new Insets(10));
-        Rectangle rec2015 = new Rectangle();
-        rec2015.widthProperty().bind(pane.widthProperty().divide(10));
-        rec2015.heightProperty().bind(pane.heightProperty().divide(10));
-        rec2015.setFill(Color.YELLOW);
-        Text txt2015 = new Text("2015");
-        subBox2015.getChildren().addAll(rec2015, txt2015);
+        HBox subBox;
+        Rectangle subRec;
+        Text subText;
+        Arc arc;
+        double point = 0, length;
+        for(int i = 0; i < index.getValues().size(); i++) {
+            // infomation
+            subBox = new HBox();
+            subBox.setAlignment(Pos.CENTER);
+            subBox.setSpacing(10);
+            subBox.setPadding(new Insets(10));
+            subRec = new Rectangle();
+            subRec.widthProperty().bind(pane.widthProperty().divide(10));
+            subRec.heightProperty().bind(pane.heightProperty().divide(10));
+            subRec.setFill(index.getValues().get(i).getColor());
+            subText = new Text(index.getValues().get(i).getYear());
+            subBox.getChildren().addAll(subRec, subText);
+            
+            // Chart
+            arc = new Arc();
+            arc.centerXProperty().bind(pane.widthProperty().divide(2));
+            arc.centerYProperty().bind(pane.heightProperty().divide(2));
+            arc.radiusXProperty().bind(pane.widthProperty().divide(4));
+            arc.radiusYProperty().bind(pane.widthProperty().divide(4));
+            arc.setStartAngle(point);
+            length = index.getValues().get(i).getPercent(index.getSum()) * 3.6;
+            arc.setLength(length );
+            System.out.println(length);
+            point += length;
+            arc.setType(ArcType.ROUND);
+            arc.setFill(index.getValues().get(i).getColor());
+            vBox.getChildren().add(subBox);
+            pane.getChildren().add(arc);
+        }
         
-        // 2016
-        HBox subBox2016 = new HBox();
-        subBox2016.setAlignment(Pos.CENTER);
-        subBox2016.setSpacing(10);
-        subBox2016.setPadding(new Insets(10));
-        Rectangle rec2016 = new Rectangle();
-        rec2016.widthProperty().bind(pane.widthProperty().divide(10));
-        rec2016.heightProperty().bind(pane.heightProperty().divide(10));
-        rec2016.setFill(Color.GREEN);
-        Text txt2016 = new Text("2016");
-        subBox2016.getChildren().addAll(rec2016, txt2016);
-        
-        // 2017
-        HBox subBox2017 = new HBox();
-        subBox2017.setAlignment(Pos.CENTER);
-        subBox2017.setSpacing(10);
-        subBox2017.setPadding(new Insets(10));
-        Rectangle rec2017 = new Rectangle();
-        rec2017.widthProperty().bind(pane.widthProperty().divide(10));
-        rec2017.heightProperty().bind(pane.heightProperty().divide(10));
-        rec2017.setFill(Color.BROWN);
-        Text txt2017 = new Text("2017");
-        subBox2017.getChildren().addAll(rec2017, txt2017);
-        
-        vBox.getChildren().addAll(subBox2014, subBox2015, subBox2016, subBox2017);
         pane.getChildren().addAll(vBox);
         Scene scene = new Scene(pane, 600, 600);
         primaryStage.setTitle("Circle Chart!");
